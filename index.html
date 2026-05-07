@@ -164,6 +164,20 @@
 </div>
 
 <script>
+    // --- بەشی ئۆفلاین (Service Worker) ---
+    const swCode = `
+    const cacheName = 'imposter-v1';
+    const assets = ['./', './index.html'];
+    self.addEventListener('install', e => e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets))));
+    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+    `;
+
+    if ('serviceWorker' in navigator) {
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        navigator.serviceWorker.register(URL.createObjectURL(blob));
+    }
+
+    // --- لۆجیکی یارییەکە ---
     let players = []; 
     let selectedCategories = [];
     const gameData = {
@@ -239,7 +253,6 @@
             allWords = allWords.concat(gameData[cat]);
         });
         
-        // هەڵبژاردنی وشەی نهێنی بە شێوەی ڕاندۆم لەو بەشانەی دەستنیشانکراون
         secretWord = allWords[Math.floor(Math.random() * allWords.length)];
         
         let count = Math.min(parseInt(document.getElementById('imposterCount').value) || 1, players.length - 2);
