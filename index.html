@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yari Imposter - Ultra Edition</title>
+    
+    <!-- بەستنەوە بە سیستەمی ئۆفلاین -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6a1b9a">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+
     <style>
         :root {
             --bg-dark: #1a0b2e;
@@ -56,12 +68,11 @@
 
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin: 5px 0; text-align: center; }
 
-        /* ناوەکان بە ڕەنگی ڕەش و تۆخ */
         .player-name-style { color: #000000; font-weight: 900; font-size: 1.2rem; }
 
         .names-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 180px; overflow-y: auto; padding: 5px; }
         .name-tag { 
-            background: rgba(255, 255, 255, 0.8); /* باکگراوندی ناوەکان ڕووناکتر بۆ دیاربوونی ڕەشەکە */
+            background: rgba(255, 255, 255, 0.8);
             padding: 10px 15px; border-radius: 15px; 
             border: 1px solid var(--glass-border); display: flex; 
             align-items: center; justify-content: space-between;
@@ -90,14 +101,12 @@
 <body>
 
 <div class="container">
-    <!-- لاپەڕەی ١ -->
     <div id="page1" class="page active">
         <h1 style="font-size: 2.5rem; margin-top: 40px;">یاری <br><span class="imposter-text">IMPOSTER</span></h1>
         <p style="margin-top: 10px; opacity: 0.8;">کێ دەتوانێ جوانترین درۆ بکات؟</p>
         <div style="margin-top: 80px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
     </div>
 
-    <!-- لاپەڕەی ٢ -->
     <div id="page2" class="page">
         <h3><b>ڕێکخستنی یاریزانەکان</b></h3>
         <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە..." onkeypress="if(event.key==='Enter')addPlayerName()">
@@ -116,7 +125,6 @@
         <button class="btn-main" onclick="startGame()">دەستپێکردنی گەڕ</button>
     </div>
 
-    <!-- لاپەڕەی ٣ -->
     <div id="page3" class="page">
         <h2 id="currentPlayerName" class="player-name-style" style="font-size: 32px; margin-bottom: 10px;">ناو</h2>
         <div class="role-card" id="roleCard" onclick="revealRole()">بۆ بینینی ڕۆڵەکەت کلیک بکە</div>
@@ -124,7 +132,6 @@
         <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">یاریزانی دواتر</button>
     </div>
 
-    <!-- لاپەڕەی ٤ -->
     <div id="page4" class="page">
         <h2><b>کاتی گفتوگۆ</b></h2>
         <div class="timer-display" id="timerValue">00:00</div>
@@ -138,7 +145,6 @@
         <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">کۆتایی هات</button>
     </div>
 
-    <!-- لاپەڕەی ٥ -->
     <div id="page5" class="page">
         <h2 style="color: black; font-weight: 900;">ئەنجامی یاری</h2>
         <div style="background: white; padding: 20px; border-radius: 20px; margin: 15px 0; color: black;">
@@ -164,7 +170,6 @@
     let selectedCategories = [];
     let currentCategory = "";
     
-    // زیادکردنی سەرەداو (Hints) بۆ ئاسانکاری ئیمپۆستەر
     const hints = {
         "پزیشک": "پەیوەندی بە نەخۆشخانەوە هەیە", "ئەندازیار": "خەریکی نەخشە و بینایە", "مامۆستا": "لە قوتابخانە کار دەکات",
         "پیتزا": "خواردنێکی ئیتالی بازنەییە", "کباب": "لەسەر خەڵوز لێ دەنرێت", "دۆڵمە": "خواردنێکی کوردی تێکەڵەیە",
@@ -229,10 +234,7 @@
         let words = gameData[currentCategory];
         secretWord = words[Math.floor(Math.random() * words.length)];
         
-        // هەڵبژاردنی ئیمپۆستەری ڕاندۆم
         imposters = [players[Math.floor(Math.random() * players.length)].name];
-        
-        // تێکەڵکردنی لیستی یاریزانەکان بۆ ئەوەی ڕیزبەندی نیشاندان ڕاندۆم بێت
         players = players.sort(() => Math.random() - 0.5);
         
         turnIndex = 0;
@@ -272,7 +274,6 @@
 
     function startTimer() {
         nextPage(4);
-        // هەڵبژاردنی یاریزانی دەستپێکەر بە ڕاندۆم
         const starter = players[Math.floor(Math.random() * players.length)].name;
         document.getElementById('starterPlayer').innerText = starter;
 
