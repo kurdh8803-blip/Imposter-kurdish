@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yari Imposter - Pro Edition</title>
+    <title>Yari Imposter - Ultra Edition</title>
     <style>
         :root {
             --bg-dark: #1a0b2e;
@@ -53,63 +53,56 @@
         }
 
         .btn-main:active { transform: scale(0.96); }
-        .btn-score { background: #4caf50; margin-top: 5px; font-size: 13px; padding: 8px; }
 
         input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin: 5px 0; text-align: center; }
 
+        /* ناوەکان بە ڕەنگی ڕەش و تۆخ */
+        .player-name-style { color: #000000; font-weight: 900; font-size: 1.2rem; }
+
         .names-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 180px; overflow-y: auto; padding: 5px; }
         .name-tag { 
-            background: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 15px; 
-            font-size: 16px; border: 1px solid var(--glass-border); display: flex; 
+            background: rgba(255, 255, 255, 0.8); /* باکگراوندی ناوەکان ڕووناکتر بۆ دیاربوونی ڕەشەکە */
+            padding: 10px 15px; border-radius: 15px; 
+            border: 1px solid var(--glass-border); display: flex; 
             align-items: center; justify-content: space-between;
         }
-        .score-badge { background: var(--gold); color: black; border-radius: 8px; padding: 2px 10px; font-weight: 900; min-width: 35px; }
+        .score-badge { background: #000; color: #fff; border-radius: 8px; padding: 2px 10px; font-weight: 900; min-width: 35px; }
 
         .grid-7 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0; }
         .category-item { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); padding: 10px 2px; border-radius: 10px; cursor: pointer; font-size: 12px; transition: 0.3s; }
-        .category-item.selected { background: var(--purple-light); box-shadow: 0 0 10px var(--purple-light); border-color: white; }
+        .category-item.selected { background: var(--purple-light); border-color: white; }
 
         .role-card {
             background: rgba(255, 255, 255, 0.95); color: #1a0b2e; padding: 50px 20px;
             border-radius: 20px; margin: 20px 0; font-size: 26px; font-weight: 900;
             cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid transparent;
+            transition: all 0.4s ease;
         }
 
-        .role-revealed { background: linear-gradient(135deg, #2e0854, #4a148c) !important; color: white !important; border-color: var(--purple-light); }
-
-        .big-word { font-size: 32px; color: #fff; text-shadow: 0 0 10px #9c27b0; display: block; margin-top: 10px; }
-        .hint-text { color: #00ffcc; font-size: 14px; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; }
+        .role-revealed { background: #000 !important; color: #fff !important; }
 
         .timer-display { font-size: 60px; font-weight: 900; margin: 15px 0; color: #fff; text-shadow: 0 0 20px var(--purple-light); }
-        .starter-box { background: var(--gold); color: black; padding: 15px; border-radius: 15px; font-weight: 900; font-size: 1.2rem; margin-top: 20px; animation: pulse 1.5s infinite; }
+        .starter-box { background: var(--gold); color: black; padding: 15px; border-radius: 15px; font-weight: 900; margin-top: 20px; border: 3px solid black; }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        .grey-footer { font-size: 14px; letter-spacing: 2px; margin-top: 20px; opacity: 0.6; }
+        .hint-alert { background: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 14px; border-right: 5px solid #ffc107; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- لاپەڕەی ١: دەستپێک -->
+    <!-- لاپەڕەی ١ -->
     <div id="page1" class="page active">
         <h1 style="font-size: 2.5rem; margin-top: 40px;">یاری <br><span class="imposter-text">IMPOSTER</span></h1>
         <p style="margin-top: 10px; opacity: 0.8;">کێ دەتوانێ جوانترین درۆ بکات؟</p>
         <div style="margin-top: 80px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
     </div>
 
-    <!-- لاپەڕەی ٢: ڕێکخستن -->
+    <!-- لاپەڕەی ٢ -->
     <div id="page2" class="page">
         <h3><b>ڕێکخستنی یاریزانەکان</b></h3>
-        <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; margin: 5px 0; border: 1px solid var(--glass-border);">
-            <div style="display: flex; gap: 5px;">
-                <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە...">
-                <button onclick="addPlayerName()" style="width:50px; border-radius:10px; border:none; background:var(--purple-light); color:white; font-size:24px; cursor:pointer;">+</button>
-            </div>
-            <div id="namesContainer" class="names-grid"></div>
-        </div>
+        <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە..." onkeypress="if(event.key==='Enter')addPlayerName()">
+        <button onclick="addPlayerName()" class="btn-main" style="width: 40px; margin: 0 auto;">+</button>
+        <div id="namesContainer" class="names-grid"></div>
         
         <div class="grid-7" id="categoryGrid">
             <div class="category-item" data-cat="کار" onclick="toggleCat(this)">کار</div>
@@ -117,63 +110,49 @@
             <div class="category-item" data-cat="کەلوپەل" onclick="toggleCat(this)">کەلوپەل</div>
             <div class="category-item" data-cat="ئاژەڵ" onclick="toggleCat(this)">ئاژەڵ</div>
             <div class="category-item" data-cat="شار" onclick="toggleCat(this)">شار</div>
-            <div class="category-item" data-cat="هەمەجۆر" onclick="toggleCat(this)">هەمەجۆر</div>
             <div class="category-item" data-cat="شتەکان" onclick="toggleCat(this)">شتەکان</div>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;"><label style="font-size: 11px;">کات (چرکە)</label><input type="number" id="gameTime" value="60"></div>
-            <div style="flex: 1;"><label style="font-size: 11px;">Imposter</label><input type="number" id="imposterCount" value="1"></div>
-        </div>
         <button class="btn-main" onclick="startGame()">دەستپێکردنی گەڕ</button>
     </div>
 
-    <!-- لاپەڕەی ٣: نیشاندانی ڕۆڵ -->
+    <!-- لاپەڕەی ٣ -->
     <div id="page3" class="page">
-        <h2 id="currentPlayerName" style="color: var(--purple-light); font-size: 28px; font-weight: 900;">ناو</h2>
+        <h2 id="currentPlayerName" class="player-name-style" style="font-size: 32px; margin-bottom: 10px;">ناو</h2>
         <div class="role-card" id="roleCard" onclick="revealRole()">بۆ بینینی ڕۆڵەکەت کلیک بکە</div>
-        <div id="imposterHelp" style="display:none; background: rgba(255, 61, 61, 0.15); border: 2px dashed var(--imposter-red); padding: 15px; border-radius: 15px;">
-            <b class="imposter-text" style="font-size: 18px;">تۆ ئیمپۆستەریت!</b><br>
-            <p id="imposterHint" class="hint-text"></p>
-        </div>
-        <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">کەسی دواتر</button>
+        <div id="imposterHintBox" style="display:none;" class="hint-alert"></div>
+        <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">یاریزانی دواتر</button>
     </div>
 
-    <!-- لاپەڕەی ٤: کاتی گفتوگۆ و دەستپێکەر -->
+    <!-- لاپەڕەی ٤ -->
     <div id="page4" class="page">
         <h2><b>کاتی گفتوگۆ</b></h2>
         <div class="timer-display" id="timerValue">00:00</div>
         
         <div class="starter-box">
-            یەکەم کەس قسە دەکات:<br>
-            <span id="starterPlayer" style="font-size: 24px; text-decoration: underline;">...</span>
+            <span style="font-size: 14px; opacity: 0.8;">دەستپێکەر:</span><br>
+            <span id="starterPlayer" class="player-name-style" style="font-size: 28px;">...</span><br>
+            <span style="font-size: 16px;">لەتۆوە دەست پێ دەکات!</span>
         </div>
 
-        <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">تەواو بوو</button>
+        <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">کۆتایی هات</button>
     </div>
 
-    <!-- لاپەڕەی ٥: ئەنجام -->
+    <!-- لاپەڕەی ٥ -->
     <div id="page5" class="page">
-        <h2 style="font-size: 24px;"><b>کۆتایی گەڕ</b></h2>
-        <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 2px solid var(--glass-border); margin: 15px 0;">
-            <p style="opacity: 0.8;">وشە نهێنییەکە بوو:</p>
-            <b style="color:var(--gold); font-size: 35px; display: block; margin: 10px 0;" id="finalWord">...</b>
-            <hr style="opacity: 0.2; margin: 15px 0;">
-            <p style="opacity: 0.8;">ئیمپۆستەرەکان:</p>
+        <h2 style="color: black; font-weight: 900;">ئەنجامی یاری</h2>
+        <div style="background: white; padding: 20px; border-radius: 20px; margin: 15px 0; color: black;">
+            <p>وشە نهێنییەکە:</p>
+            <b style="font-size: 35px; color: var(--purple-main);" id="finalWord">...</b>
+            <hr style="margin: 10px 0;">
+            <p>ئیمپۆستەر:</p>
             <b class="imposter-text" style="font-size: 28px;" id="finalImposters">...</b>
         </div>
-        
-        <p style="font-size: 16px; margin-bottom: 10px;">کێ بردیەوە؟</p>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-main btn-score" onclick="updateScore('citizens')">گرووپ (+١ خاڵ)</button>
-            <button class="btn-main btn-score" style="background:#f44336;" onclick="updateScore('imposters')">ئیمپۆستەر (+٣ خاڵ)</button>
-        </div>
-        <button class="btn-main" onclick="resetToSetup()" style="margin-top: 20px; background: none; border: 1px solid white;">گەڕی نوێ</button>
+        <button class="btn-main" onclick="resetToSetup()">گەڕی نوێ</button>
     </div>
 
     <div id="pageTimeOut" class="page">
         <h1 class="imposter-text" style="font-size: 5rem; margin-top: 40px;">STOP</h1>
-        <p>کاتی گفتوگۆ تەواو بوو!</p>
         <button class="btn-main" onclick="finishGame()">ئاشکراکردن</button>
     </div>
 
@@ -184,17 +163,26 @@
     let players = []; 
     let selectedCategories = [];
     let currentCategory = "";
-    const gameData = {
-        "کار": ["پزیشک", "ئەندازیار", "مامۆستا", "پۆلیس", "جوتیار", "سەرتاش", "وێنەگر", "نانەوا", "فڕۆکەوان", "پارێزەر"],
-        "خواردن": ["پیتزا", "کباب", "دۆڵمە", "بەرگر", "برنج", "شێلم", "شۆربا", "مریشک", "ماسی", "یاپراخ"],
-        "کەلوپەل": ["قەڵەم", "مۆبایل", "کۆمپیوتەر", "سەعات", "کورسی", "تەلەفزیۆن", "چەتر", "کلیل", "جام", "گوێگرە"],
-        "ئاژەڵ": ["شێر", "پشیلە", "فیل", "ئەسپ", "سەگ", "ورچ", "کەروێشک", "مەیمون", "گورگ", "کیسەڵ"],
-        "شار": ["هەولێر", "سلێمانی", "دۆهۆک", "کەرکوک", "هەڵەبجە", "بەغداد", "لەندەن", "پاریس", "ئیستانبوڵ", "بەرلین"],
-        "هەمەجۆر": ["مانگ", "خۆر", "دەریا", "چیا", "کتێب", "فڕۆکە", "ئۆتۆمبێل", "باران", "بەفر", "ئەستێرە"],
-        "شتەکان": ["کەوچک", "قاپ", "پەردە", "فڵچە", "سابوون", "شانە", "بالیف", "میز", "پێڵاو", "جامانە"]
+    
+    // زیادکردنی سەرەداو (Hints) بۆ ئاسانکاری ئیمپۆستەر
+    const hints = {
+        "پزیشک": "پەیوەندی بە نەخۆشخانەوە هەیە", "ئەندازیار": "خەریکی نەخشە و بینایە", "مامۆستا": "لە قوتابخانە کار دەکات",
+        "پیتزا": "خواردنێکی ئیتالی بازنەییە", "کباب": "لەسەر خەڵوز لێ دەنرێت", "دۆڵمە": "خواردنێکی کوردی تێکەڵەیە",
+        "مۆبایل": "بۆ پەیوەندی و ئینتەرنێتە", "کۆمپیوتەر": "شاشە و کیبۆردی هەیە", "سەعات": "کات نیشان دەدات",
+        "شێر": "پاشای دارستانە", "پشیلە": "ئاژەڵێکی ماڵی بچوکە", "فیل": "خەرتومی درێژی هەیە",
+        "هەولێر": "پایتەختی کوردستانە", "سلێمانی": "شاری هەڵمەت و قوربانییە", "لەندەن": "پایتەختی بەریتانیایە"
     };
 
-    let secretWord = "", imposters = [], turnIndex = 0, isRevealed = false, timerInterval;
+    const gameData = {
+        "کار": ["پزیشک", "ئەندازیار", "مامۆستا", "پۆلیس", "نانەوا"],
+        "خواردن": ["پیتزا", "کباب", "دۆڵمە", "بەرگر", "برنج"],
+        "کەلوپەل": ["مۆبایل", "کۆمپیوتەر", "سەعات", "کورسی", "تەلەفزیۆن"],
+        "ئاژەڵ": ["شێر", "پشیلە", "فیل", "ئەسپ", "سەگ"],
+        "شار": ["هەولێر", "سلێمانی", "دۆهۆک", "پاریس", "لەندەن"],
+        "شتەکان": ["کەوچک", "قاپ", "پەردە", "کلیل", "جام"]
+    };
+
+    let secretWord = "", imposters = [], turnIndex = 0, timerInterval;
 
     function nextPage(p) {
         document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
@@ -205,7 +193,7 @@
     function addPlayerName() {
         const input = document.getElementById('nameInput');
         const name = input.value.trim();
-        if (name && players.length < 12) {
+        if (name) {
             players.push({ name: name, score: 0 });
             renderNames();
             input.value = "";
@@ -216,25 +204,11 @@
         const container = document.getElementById('namesContainer');
         container.innerHTML = players.map((p, index) => `
             <div class="name-tag">
-                <div style="font-weight: bold;">
-                    <span style="color:#ff4d4d; cursor:pointer; margin-left:10px;" onclick="removeName(${index})">×</span>
-                    ${p.name}
-                </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <button class="btn-mini" style="background:#f44336; border:none; color:white; border-radius:4px; width:20px;" onclick="manualScore(${index}, -1)">-</button>
-                    <span class="score-badge">${p.score}</span>
-                    <button class="btn-mini" style="background:#4caf50; border:none; color:white; border-radius:4px; width:20px;" onclick="manualScore(${index}, 1)">+</button>
-                </div>
+                <span class="player-name-style">${p.name}</span>
+                <span class="score-badge">${p.score}</span>
             </div>
         `).join('');
     }
-
-    function manualScore(index, val) {
-        players[index].score = Math.max(0, players[index].score + val);
-        renderNames();
-    }
-
-    function removeName(index) { players.splice(index, 1); renderNames(); }
 
     function toggleCat(el) {
         const cat = el.getAttribute('data-cat');
@@ -249,19 +223,17 @@
 
     function startGame() {
         if (players.length < 3) return alert("لایەنی کەم ٣ یاریزان پێویستە");
-        if (selectedCategories.length === 0) return alert("لایەنی کەم جۆرێک هەڵبژێرە");
+        if (selectedCategories.length === 0) return alert("بەشێک هەڵبژێرە");
 
         currentCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
-        let wordsInCat = gameData[currentCategory];
-        secretWord = wordsInCat[Math.floor(Math.random() * wordsInCat.length)];
+        let words = gameData[currentCategory];
+        secretWord = words[Math.floor(Math.random() * words.length)];
         
-        let count = Math.min(parseInt(document.getElementById('imposterCount').value) || 1, players.length - 2);
-        imposters = [];
-        let tempNames = players.map(p => p.name);
-        for(let i=0; i<count; i++) {
-            let idx = Math.floor(Math.random() * tempNames.length);
-            imposters.push(tempNames.splice(idx, 1)[0]);
-        }
+        // هەڵبژاردنی ئیمپۆستەری ڕاندۆم
+        imposters = [players[Math.floor(Math.random() * players.length)].name];
+        
+        // تێکەڵکردنی لیستی یاریزانەکان بۆ ئەوەی ڕیزبەندی نیشاندان ڕاندۆم بێت
+        players = players.sort(() => Math.random() - 0.5);
         
         turnIndex = 0;
         showTurn();
@@ -269,56 +241,48 @@
     }
 
     function showTurn() {
-        isRevealed = false;
         document.getElementById('currentPlayerName').innerText = players[turnIndex].name;
         const card = document.getElementById('roleCard');
         card.classList.remove('role-revealed');
-        card.innerHTML = "بۆ بینینی ڕۆڵەکەت کلیک بکە";
-        document.getElementById('imposterHelp').style.display = "none";
+        card.innerText = "بۆ بینینی ڕۆڵەکەت کلیک بکە";
+        document.getElementById('imposterHintBox').style.display = "none";
         document.getElementById('nextTurnBtn').style.display = "none";
     }
 
     function revealRole() {
-        if (isRevealed) return;
         const card = document.getElementById('roleCard');
         card.classList.add('role-revealed');
         
         if (imposters.includes(players[turnIndex].name)) {
-            card.innerHTML = "<span class='imposter-text' style='font-size:40px;'>IMPOSTER</span>";
-            document.getElementById('imposterHelp').style.display = "block";
-            document.getElementById('imposterHint').innerText = "ئاسانکاری: وشەکە سەر بە بەشی (" + currentCategory + ") یە. هەوڵبدە شتێکی نزیک بڵێیت!";
+            card.innerHTML = "<span class='imposter-text'>IMPOSTER</span>";
+            const hint = hints[secretWord] || "هەوڵبدە لە دەوروبەری بابەتەکە قسە بکەیت";
+            document.getElementById('imposterHintBox').style.display = "block";
+            document.getElementById('imposterHintBox').innerHTML = `💡 ئاسانکاری: ئەمە (<b>${currentCategory}</b>) یە. <br>سەرەداو: ${hint}`;
         } else {
-            card.innerHTML = "وشەکە:<br><span class='big-word'>" + secretWord + "</span>";
+            card.innerHTML = `وشەکە:<br><span style="color:var(--gold)">${secretWord}</span>`;
         }
-        isRevealed = true;
         document.getElementById('nextTurnBtn').style.display = "inline-block";
     }
 
     function nextTurn() {
         turnIndex++;
-        if (turnIndex < players.length) {
-            showTurn();
-        } else {
-            startTimer();
-        }
+        if (turnIndex < players.length) showTurn();
+        else startTimer();
     }
 
     function startTimer() {
         nextPage(4);
-        // هەڵبژاردنی کەسێک بۆ دەستپێکردنی قسە بە ڕاندۆم
-        const randomStarter = players[Math.floor(Math.random() * players.length)].name;
-        document.getElementById('starterPlayer').innerText = randomStarter;
+        // هەڵبژاردنی یاریزانی دەستپێکەر بە ڕاندۆم
+        const starter = players[Math.floor(Math.random() * players.length)].name;
+        document.getElementById('starterPlayer').innerText = starter;
 
-        let seconds = parseInt(document.getElementById('gameTime').value) || 60;
+        let seconds = 60;
         const display = document.getElementById('timerValue');
         timerInterval = setInterval(() => {
             let mins = Math.floor(seconds / 60);
             let secs = seconds % 60;
             display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            if (seconds <= 0) {
-                clearInterval(timerInterval);
-                nextPage('pageTimeOut');
-            }
+            if (seconds <= 0) { clearInterval(timerInterval); nextPage('pageTimeOut'); }
             seconds--;
         }, 1000);
     }
@@ -334,18 +298,7 @@
         nextPage(5);
     }
 
-    function updateScore(winner) {
-        players.forEach(p => {
-            if (winner === 'imposters' && imposters.includes(p.name)) p.score += 3;
-            if (winner === 'citizens' && !imposters.includes(p.name)) p.score += 1;
-        });
-        renderNames();
-        alert("خاڵەکان تۆمارکران!");
-    }
-
-    function resetToSetup() {
-        nextPage(2);
-    }
+    function resetToSetup() { nextPage(2); }
 </script>
 </body>
 </html>
