@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yari Imposter - Ultra Edition</title>
+    <title>Yari Imposter - Offline Edition</title>
     
     <style>
         :root {
@@ -98,12 +98,14 @@
 <body>
 
 <div class="container">
+    <!-- Page 1: Start -->
     <div id="page1" class="page active">
         <h1 style="font-size: 2.5rem; margin-top: 40px;">یاری <br><span class="imposter-text">IMPOSTER</span></h1>
         <p style="margin-top: 10px; opacity: 0.8;">کێ دەتوانێ جوانترین درۆ بکات؟</p>
         <div style="margin-top: 80px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
     </div>
 
+    <!-- Page 2: Setup -->
     <div id="page2" class="page">
         <h3><b>ڕێکخستنی یاریزانەکان</b></h3>
         <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە..." onkeypress="if(event.key==='Enter')addPlayerName()">
@@ -122,6 +124,7 @@
         <button class="btn-main" onclick="startGame()">دەستپێکردنی گەڕ</button>
     </div>
 
+    <!-- Page 3: Reveal -->
     <div id="page3" class="page">
         <h2 id="currentPlayerName" class="player-name-style" style="font-size: 32px; margin-bottom: 10px; color: white;">ناو</h2>
         <div class="role-card" id="roleCard" onclick="revealRole()">بۆ بینینی ڕۆڵەکەت کلیک بکە</div>
@@ -129,9 +132,10 @@
         <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">یاریزانی دواتر</button>
     </div>
 
+    <!-- Page 4: Timer -->
     <div id="page4" class="page">
         <h2><b>کاتی گفتوگۆ</b></h2>
-        <div class="timer-display" id="timerValue">00:00</div>
+        <div class="timer-display" id="timerValue">01:00</div>
         
         <div class="starter-box">
             <span style="font-size: 14px; opacity: 0.8;">دەستپێکەر:</span><br>
@@ -142,6 +146,7 @@
         <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">کۆتایی هات</button>
     </div>
 
+    <!-- Page 5: Final Result -->
     <div id="page5" class="page">
         <h2 style="color: white; font-weight: 900;">ئەنجامی یاری</h2>
         <div style="background: white; padding: 20px; border-radius: 20px; margin: 15px 0; color: black;">
@@ -154,6 +159,7 @@
         <button class="btn-main" onclick="resetToSetup()">گەڕی نوێ</button>
     </div>
 
+    <!-- Timeout Page -->
     <div id="pageTimeOut" class="page">
         <h1 class="imposter-text" style="font-size: 5rem; margin-top: 40px;">STOP</h1>
         <button class="btn-main" onclick="finishGame()">ئاشکراکردن</button>
@@ -161,6 +167,7 @@
 </div>
 
 <script>
+    // ئەم داتایانە لەناو فایلی ئۆفلاینەکە جێگیر کراون
     let players = []; 
     let selectedCategories = [];
     let currentCategory = "";
@@ -240,8 +247,13 @@
         currentCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
         let words = gameData[currentCategory];
         secretWord = words[Math.floor(Math.random() * words.length)];
+        
+        // هەڵبژاردنی ئیمپۆستەر
         imposters = [players[Math.floor(Math.random() * players.length)].name];
+        
+        // ڕیزکردنی یاریزانەکان بۆ نیشاندان
         displayOrder = [...players].sort(() => Math.random() - 0.5);
+        
         turnIndex = 0;
         showTurn();
         nextPage(3);
@@ -259,6 +271,7 @@
     function revealRole() {
         const card = document.getElementById('roleCard');
         card.classList.add('role-revealed');
+        
         if (imposters.includes(displayOrder[turnIndex].name)) {
             card.innerHTML = "<span class='imposter-text'>IMPOSTER</span>";
             const hint = hints[secretWord] || "هەوڵبدە لە دەوروبەری بابەتەکە قسە بکەیت";
@@ -272,31 +285,46 @@
 
     function nextTurn() {
         turnIndex++;
-        if (turnIndex < displayOrder.length) showTurn();
-        else startTimer();
+        if (turnIndex < displayOrder.length) {
+            showTurn();
+        } else {
+            startTimer();
+        }
     }
 
     function startTimer() {
         nextPage(4);
-        document.getElementById('starterPlayer').innerText = players[Math.floor(Math.random() * players.length)].name;
+        const starter = players[Math.floor(Math.random() * players.length)].name;
+        document.getElementById('starterPlayer').innerText = starter;
+
         let seconds = 60;
         const display = document.getElementById('timerValue');
         timerInterval = setInterval(() => {
+            seconds--;
             let mins = Math.floor(seconds / 60);
             let secs = seconds % 60;
             display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            if (seconds <= 0) { clearInterval(timerInterval); nextPage('pageTimeOut'); }
-            seconds--;
+            if (seconds <= 0) { 
+                clearInterval(timerInterval); 
+                nextPage('pageTimeOut'); 
+            }
         }, 1000);
     }
 
-    function stopTimerAndGoToTimeout() { clearInterval(timerInterval); nextPage('pageTimeOut'); }
+    function stopTimerAndGoToTimeout() {
+        clearInterval(timerInterval);
+        nextPage('pageTimeOut');
+    }
+
     function finishGame() {
         document.getElementById('finalWord').innerText = secretWord;
         document.getElementById('finalImposters').innerText = imposters.join(" - ");
         nextPage(5);
     }
-    function resetToSetup() { nextPage(2); }
+
+    function resetToSetup() { 
+        nextPage(2); 
+    }
 </script>
 </body>
 </html>
