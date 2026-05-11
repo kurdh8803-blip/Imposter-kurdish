@@ -3,326 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yari Imposter - Ultra Edition</title>
+    <title>Imposter Online</title>
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6a1b9a">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js');
-            });
-        }
-    </script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
 
     <style>
-        :root {
-            --bg-dark: #1a0b2e;
-            --purple-main: #6a1b9a;
-            --purple-light: #9c27b0;
-            --glass: rgba(255, 255, 255, 0.1);
-            --imposter-red: #ff3d3d;
-            --glass-border: rgba(255, 255, 255, 0.25);
-            --pure-white: #ffffff;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
-        body {
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #6a1b9a, #24243e);
-            background-size: 400% 400%;
-            animation: gradientMove 10s ease infinite;
-            height: 100vh; display: flex; justify-content: center; align-items: center;
-            color: white; overflow: hidden;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            width: 95%; max-width: 450px; background: var(--glass); backdrop-filter: blur(20px);
-            border-radius: 25px; padding: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--glass-border); text-align: center; position: relative;
-            min-height: 620px; display: flex; flex-direction: column; justify-content: space-between;
-        }
-
-        .page { display: none; animation: fadeIn 0.4s ease-out; }
+        /* هەمان ستایلەکانی پێشووت لێرە دابنێ - بۆ کورتکردنەوە لێرە لایمان بردووە */
+        :root { --purple-main: #6a1b9a; --pure-white: #ffffff; --imposter-red: #ff3d3d; }
+        body { background: #1a0b2e; color: white; font-family: sans-serif; text-align: center; }
+        .page { display: none; padding: 20px; }
         .active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .imposter-text { color: var(--imposter-red); text-shadow: 0 0 15px var(--imposter-red); font-family: 'Arial Black', sans-serif; text-transform: uppercase; font-weight: 900; }
-
-        .btn-main {
-            background: linear-gradient(45deg, var(--purple-main), var(--purple-light));
-            border: none; padding: 14px; color: white; border-radius: 12px;
-            cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; font-size: 16px;
-            margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-main:active { transform: scale(0.96); }
-
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin: 5px 0; text-align: center; }
-
-        .player-name-style { color: #000000; font-weight: 900; font-size: 1.1rem; }
-
-        .names-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 220px; overflow-y: auto; padding: 5px; }
-        .name-tag { 
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 12px; border-radius: 15px; 
-            border: 1px solid var(--glass-border); display: flex; 
-            align-items: center; justify-content: space-between;
-        }
-
-        /* ستایلی پۆینتەکان */
-        .score-controls { display: flex; align-items: center; gap: 8px; }
-        .btn-score { 
-            background: #000; color: #fff; border: none; width: 25px; height: 25px; 
-            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 18px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .score-badge { background: var(--purple-main); color: #fff; border-radius: 8px; padding: 2px 10px; font-weight: 900; min-width: 35px; text-align: center; }
-
-        .grid-7 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0; }
-        .category-item { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); padding: 10px 2px; border-radius: 10px; cursor: pointer; font-size: 12px; transition: 0.3s; }
-        .category-item.selected { background: var(--purple-light); border-color: white; }
-
-        .role-card {
-            background: rgba(255, 255, 255, 0.95); color: #1a0b2e; padding: 50px 20px;
-            border-radius: 20px; margin: 20px 0; font-size: 26px; font-weight: 900;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
-        }
-
-        .role-revealed { background: #000 !important; color: #fff !important; }
-
-        .timer-display { font-size: 60px; font-weight: 900; margin: 15px 0; color: #fff; text-shadow: 0 0 20px var(--purple-light); }
-        
-        /* گۆڕینی ڕەنگی زەرد بۆ سپی */
-        .starter-box { background: var(--pure-white); color: black; padding: 15px; border-radius: 15px; font-weight: 900; margin-top: 20px; border: 3px solid black; }
-
-        .hint-alert { background: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 14px; border-right: 5px solid #ffc107; font-weight: bold; }
+        input { padding: 10px; border-radius: 8px; margin: 10px; width: 80%; }
+        .btn-main { background: var(--purple-main); color: white; padding: 12px 25px; border: none; border-radius: 10px; cursor: pointer; }
+        .room-info { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 10px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="page1" class="page active">
-        <h1 style="font-size: 2.5rem; margin-top: 40px;">یاری <br><span class="imposter-text">IMPOSTER</span></h1>
-        <p style="margin-top: 10px; opacity: 0.8;">کێ دەتوانێ جوانترین درۆ بکات؟</p>
-        <div style="margin-top: 80px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
-    </div>
+<div id="setupPage" class="page active">
+    <h1>IMPOSTER <span style="color:var(--imposter-red)">ONLINE</span></h1>
+    <input type="text" id="userName" placeholder="ناوی خۆت بنووسە">
+    <br>
+    <input type="text" id="roomCode" placeholder="کۆدی ژوور (بۆ نموونە: 1234)">
+    <br>
+    <button class="btn-main" onclick="joinRoom()">چوونە ژوورەوە / دروستکردن</button>
+</div>
 
-    <div id="page2" class="page">
-        <h3><b>ڕێکخستنی یاریزانەکان</b></h3>
-        <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە..." onkeypress="if(event.key==='Enter')addPlayerName()">
-        <button onclick="addPlayerName()" class="btn-main" style="width: 40px; margin: 0 auto;">+</button>
-        <div id="namesContainer" class="names-grid"></div>
-        
-        <div class="grid-7" id="categoryGrid">
-            <div class="category-item" data-cat="کار" onclick="toggleCat(this)">کار</div>
-            <div class="category-item" data-cat="خواردن" onclick="toggleCat(this)">خواردن</div>
-            <div class="category-item" data-cat="کەلوپەل" onclick="toggleCat(this)">کەلوپەل</div>
-            <div class="category-item" data-cat="ئاژەڵ" onclick="toggleCat(this)">ئاژەڵ</div>
-            <div class="category-item" data-cat="شار" onclick="toggleCat(this)">شار</div>
-            <div class="category-item" data-cat="شتەکان" onclick="toggleCat(this)">شتەکان</div>
-        </div>
+<div id="lobbyPage" class="page">
+    <div class="room-info">کۆدی ژوور: <b id="displayRoomCode"></b></div>
+    <h3>یاریزانە ئامادەبووەکان:</h3>
+    <div id="playerList"></div>
+    <br>
+    <button id="startBtn" class="btn-main" style="display:none;" onclick="hostStartGame()">دەستپێکردنی یاری</button>
+    <p id="waitMsg">چاوەڕێی خاوەن ژوور بکە...</p>
+</div>
 
-        <button class="btn-main" onclick="startGame()">دەستپێکردنی گەڕ</button>
-    </div>
-
-    <div id="page3" class="page">
-        <h2 id="currentPlayerName" class="player-name-style" style="font-size: 32px; margin-bottom: 10px; color: white;">ناو</h2>
-        <div class="role-card" id="roleCard" onclick="revealRole()">بۆ بینینی ڕۆڵەکەت کلیک بکە</div>
-        <div id="imposterHintBox" style="display:none;" class="hint-alert"></div>
-        <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">یاریزانی دواتر</button>
-    </div>
-
-    <div id="page4" class="page">
-        <h2><b>کاتی گفتوگۆ</b></h2>
-        <div class="timer-display" id="timerValue">00:00</div>
-        
-        <div class="starter-box">
-            <span style="font-size: 14px; opacity: 0.8;">دەستپێکەر:</span><br>
-            <span id="starterPlayer" style="font-size: 28px; font-weight: 900;">...</span><br>
-            <span style="font-size: 16px;">لەتۆوە دەست پێ دەکات!</span>
-        </div>
-
-        <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">کۆتایی هات</button>
-    </div>
-
-    <div id="page5" class="page">
-        <h2 style="color: white; font-weight: 900;">ئەنجامی یاری</h2>
-        <div style="background: white; padding: 20px; border-radius: 20px; margin: 15px 0; color: black;">
-            <p>وشە نهێنییەکە:</p>
-            <b style="font-size: 35px; color: var(--purple-main);" id="finalWord">...</b>
-            <hr style="margin: 10px 0;">
-            <p>ئیمپۆستەر:</p>
-            <b class="imposter-text" style="font-size: 28px;" id="finalImposters">...</b>
-        </div>
-        <button class="btn-main" onclick="resetToSetup()">گەڕی نوێ</button>
-    </div>
-
-    <div id="pageTimeOut" class="page">
-        <h1 class="imposter-text" style="font-size: 5rem; margin-top: 40px;">STOP</h1>
-        <button class="btn-main" onclick="finishGame()">ئاشکراکردن</button>
-    </div>
+<div id="gamePage" class="page">
+    <h2 id="yourRole">ڕۆڵەکەت</h2>
+    <div id="wordDisplay" style="font-size: 30px; margin: 20px; padding: 40px; background: white; color: black; border-radius: 15px;">...</div>
+    <p id="gameHint"></p>
 </div>
 
 <script>
-    let players = []; 
-    let selectedCategories = [];
-    let currentCategory = "";
+    // --- ١. لێرە زانیارییەکانی Firebase ی خۆت دابنێ ---
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        databaseURL: "YOUR_DATABASE_URL",
+        projectId: "YOUR_PROJECT_ID"
+    };
     
-    const hints = {
-        "پزیشک": "پەیوەندی بە نەخۆشخانەوە هەیە", "ئەندازیار": "خەریکی نەخشە و بینایە", "مامۆستا": "لە قوتابخانە کار دەکات",
-        "پیتزا": "خواردنێکی ئیتالی بازنەییە", "کباب": "لەسەر خەڵوز لێ دەنرێت", "دۆڵمە": "خواردنێکی کوردی تێکەڵەیە",
-        "مۆبایل": "بۆ پەیوەندی و ئینتەرنێتە", "کۆمپیوتەر": "شاشە و کیبۆردی هەیە", "سەعات": "کات نیشان دەدات",
-        "شێر": "پاشای دارستانە", "پشیلە": "ئاژەڵێکی ماڵی بچوکە", "فیل": "خەرتومی درێژی هەیە",
-        "هەولێر": "پایتەختی کوردستانە", "سلێمانی": "شاری هەڵمەت و قوربانییە", "لەندەن": "پایتەختی بەریتانیایە"
-    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const gameData = {
-        "کار": ["پزیشک", "ئەندازیار", "مامۆستا", "پۆلیس", "نانەوا"],
-        "خواردن": ["پیتزا", "کباب", "دۆڵمە", "بەرگر", "برنج"],
-        "کەلوپەل": ["مۆبایل", "کۆمپیوتەر", "سەعات", "کورسی", "تەلەفزیۆن"],
-        "ئاژەڵ": ["شێر", "پشیلە", "فیل", "ئەسپ", "سەگ"],
-        "شار": ["هەولێر", "سلێمانی", "دۆهۆک", "پاریس", "لەندەن"],
-        "شتەکان": ["کەوچک", "قاپ", "پەردە", "کلیل", "جام"]
-    };
+    let myName = "";
+    let roomID = "";
+    let isHost = false;
 
-    let secretWord = "", imposters = [], turnIndex = 0, timerInterval;
+    function joinRoom() {
+        myName = document.getElementById('userName').value.trim();
+        roomID = document.getElementById('roomCode').value.trim();
+        
+        if(!myName || !roomID) return alert("ناو و کۆد بنووسە");
 
-    function nextPage(p) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        const target = (typeof p === 'number') ? document.getElementById('page' + p) : document.getElementById(p);
-        target.classList.add('active');
-        if(p === 2) renderNames();
+        const roomRef = db.ref('rooms/' + roomID);
+
+        roomRef.once('value', snapshot => {
+            if (!snapshot.exists()) {
+                isHost = true;
+                document.getElementById('startBtn').style.display = 'block';
+                document.getElementById('waitMsg').style.display = 'none';
+            }
+            
+            // زیادکردنی یاریزان
+            db.ref('rooms/' + roomID + '/players/' + myName).set({
+                name: myName,
+                score: 0
+            });
+
+            listenToRoom();
+            showPage('lobbyPage');
+            document.getElementById('displayRoomCode').innerText = roomID;
+        });
     }
 
-    function addPlayerName() {
-        const input = document.getElementById('nameInput');
-        const name = input.value.trim();
-        if (name) {
-            players.push({ name: name, score: 0 });
-            renderNames();
-            input.value = "";
-        }
+    function listenToRoom() {
+        const roomRef = db.ref('rooms/' + roomID);
+        
+        // گوێگرتن لە لیستەکە
+        roomRef.child('players').on('value', snapshot => {
+            const players = snapshot.val();
+            let html = "";
+            for(let p in players) {
+                html += `<div>• ${players[p].name}</div>`;
+            }
+            document.getElementById('playerList').innerHTML = html;
+        });
+
+        // گوێگرتن بۆ کاتی دەستپێکردن
+        roomRef.child('gameState').on('value', snapshot => {
+            const state = snapshot.val();
+            if(state && state.status === "playing") {
+                displayRole(state);
+            }
+        });
     }
 
-    // گۆڕینی خاڵەکان بە دەست
-    function updateScore(index, amount) {
-        players[index].score += amount;
-        if(players[index].score < 0) players[index].score = 0;
-        renderNames();
+    function hostStartGame() {
+        const words = ["پیتزا", "کەباب", "مۆبایل", "هەولێر", "پشیلە"];
+        const secretWord = words[Math.floor(Math.random() * words.length)];
+        
+        db.ref('rooms/' + roomID + '/players').once('value', snapshot => {
+            const players = Object.keys(snapshot.val());
+            const imposter = players[Math.floor(Math.random() * players.length)];
+            
+            db.ref('rooms/' + roomID + '/gameState').set({
+                status: "playing",
+                secretWord: secretWord,
+                imposter: imposter,
+                startTime: Date.now()
+            });
+        });
     }
 
-    function renderNames() {
-        const container = document.getElementById('namesContainer');
-        container.innerHTML = players.map((p, index) => `
-            <div class="name-tag">
-                <span class="player-name-style">${p.name}</span>
-                <div class="score-controls">
-                    <button class="btn-score" onclick="updateScore(${index}, -1)">-</button>
-                    <span class="score-badge">${p.score}</span>
-                    <button class="btn-score" onclick="updateScore(${index}, 1)">+</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function toggleCat(el) {
-        const cat = el.getAttribute('data-cat');
-        if (selectedCategories.includes(cat)) {
-            selectedCategories = selectedCategories.filter(c => c !== cat);
-            el.classList.remove('selected');
+    function displayRole(state) {
+        showPage('gamePage');
+        const display = document.getElementById('wordDisplay');
+        if(state.imposter === myName) {
+            display.innerText = "تۆ IMPOSTER ـیت!";
+            display.style.color = "red";
         } else {
-            selectedCategories.push(cat);
-            el.classList.add('selected');
+            display.innerText = "وشەکە: " + state.secretWord;
+            display.style.color = "black";
         }
     }
 
-    function startGame() {
-        if (players.length < 3) return alert("لایەنی کەم ٣ یاریزان پێویستە");
-        if (selectedCategories.length === 0) return alert("بەشێک هەڵبژێرە");
-
-        currentCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
-        let words = gameData[currentCategory];
-        secretWord = words[Math.floor(Math.random() * words.length)];
-        
-        imposters = [players[Math.floor(Math.random() * players.length)].name];
-        
-        // دروستکردنی لیستێکی کاتی بۆ نیشاندانی ڕۆڵەکان بەبێ تێکدانی ڕیزبەندی سەرەکی
-        displayOrder = [...players].sort(() => Math.random() - 0.5);
-        
-        turnIndex = 0;
-        showTurn();
-        nextPage(3);
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
-
-    let displayOrder = [];
-
-    function showTurn() {
-        document.getElementById('currentPlayerName').innerText = displayOrder[turnIndex].name;
-        const card = document.getElementById('roleCard');
-        card.classList.remove('role-revealed');
-        card.innerText = "بۆ بینینی ڕۆڵەکەت کلیک بکە";
-        document.getElementById('imposterHintBox').style.display = "none";
-        document.getElementById('nextTurnBtn').style.display = "none";
-    }
-
-    function revealRole() {
-        const card = document.getElementById('roleCard');
-        card.classList.add('role-revealed');
-        
-        if (imposters.includes(displayOrder[turnIndex].name)) {
-            card.innerHTML = "<span class='imposter-text'>IMPOSTER</span>";
-            const hint = hints[secretWord] || "هەوڵبدە لە دەوروبەری بابەتەکە قسە بکەیت";
-            document.getElementById('imposterHintBox').style.display = "block";
-            document.getElementById('imposterHintBox').innerHTML = `💡 ئاسانکاری: ئەمە (<b>${currentCategory}</b>) یە. <br>سەرەداو: ${hint}`;
-        } else {
-            card.innerHTML = `وشەکە:<br><span style="color:var(--pure-white)">${secretWord}</span>`;
-        }
-        document.getElementById('nextTurnBtn').style.display = "inline-block";
-    }
-
-    function nextTurn() {
-        turnIndex++;
-        if (turnIndex < displayOrder.length) showTurn();
-        else startTimer();
-    }
-
-    function startTimer() {
-        nextPage(4);
-        const starter = players[Math.floor(Math.random() * players.length)].name;
-        document.getElementById('starterPlayer').innerText = starter;
-
-        let seconds = 60;
-        const display = document.getElementById('timerValue');
-        timerInterval = setInterval(() => {
-            let mins = Math.floor(seconds / 60);
-            let secs = seconds % 60;
-            display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            if (seconds <= 0) { clearInterval(timerInterval); nextPage('pageTimeOut'); }
-            seconds--;
-        }, 1000);
-    }
-
-    function stopTimerAndGoToTimeout() {
-        clearInterval(timerInterval);
-        nextPage('pageTimeOut');
-    }
-
-    function finishGame() {
-        document.getElementById('finalWord').innerText = secretWord;
-        document.getElementById('finalImposters').innerText = imposters.join(" - ");
-        nextPage(5);
-    }
-
-    function resetToSetup() { nextPage(2); }
 </script>
 </body>
 </html>
