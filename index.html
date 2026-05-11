@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yari Imposter - Pro Score Edition</title>
+    <title>Yari Imposter - Pro Edition</title>
     <style>
         :root {
             --bg-dark: #1a0b2e;
@@ -35,7 +35,7 @@
             width: 95%; max-width: 450px; background: var(--glass); backdrop-filter: blur(20px);
             border-radius: 25px; padding: 25px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--glass-border); text-align: center; position: relative;
-            min-height: 600px; display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 620px; display: flex; flex-direction: column; justify-content: space-between;
         }
 
         .page { display: none; animation: fadeIn 0.4s ease-out; }
@@ -43,32 +43,27 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .imposter-text { color: var(--imposter-red); text-shadow: 0 0 15px var(--imposter-red); font-family: 'Arial Black', sans-serif; text-transform: uppercase; }
+        .imposter-text { color: var(--imposter-red); text-shadow: 0 0 15px var(--imposter-red); font-family: 'Arial Black', sans-serif; text-transform: uppercase; font-weight: 900; }
 
         .btn-main {
             background: linear-gradient(45deg, var(--purple-main), var(--purple-light));
             border: none; padding: 14px; color: white; border-radius: 12px;
             cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; font-size: 16px;
-            margin-top: 10px;
+            margin-top: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .btn-main:active { transform: scale(0.96); }
         .btn-score { background: #4caf50; margin-top: 5px; font-size: 13px; padding: 8px; }
 
-        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin: 5px 0; }
+        input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin: 5px 0; text-align: center; }
 
         .names-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-height: 180px; overflow-y: auto; padding: 5px; }
         .name-tag { 
             background: rgba(255, 255, 255, 0.05); padding: 8px 12px; border-radius: 15px; 
-            font-size: 14px; border: 1px solid var(--glass-border); display: flex; 
-            align-items: center; justify-content: space-between; gap: 5px;
+            font-size: 16px; border: 1px solid var(--glass-border); display: flex; 
+            align-items: center; justify-content: space-between;
         }
-        .score-controls { display: flex; align-items: center; gap: 5px; }
-        .btn-mini { width: 25px; height: 25px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; color: white; }
-        .btn-plus { background: #4caf50; }
-        .btn-minus { background: #f44336; }
-        .score-badge { background: var(--gold); color: black; border-radius: 8px; padding: 2px 10px; font-weight: bold; min-width: 30px; text-align: center; }
-        .remove-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; font-size: 18px; margin-right: 10px; }
+        .score-badge { background: var(--gold); color: black; border-radius: 8px; padding: 2px 10px; font-weight: 900; min-width: 35px; }
 
         .grid-7 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 15px 0; }
         .category-item { background: rgba(255, 255, 255, 0.08); border: 1px solid var(--glass-border); padding: 10px 2px; border-radius: 10px; cursor: pointer; font-size: 12px; transition: 0.3s; }
@@ -76,34 +71,42 @@
 
         .role-card {
             background: rgba(255, 255, 255, 0.95); color: #1a0b2e; padding: 50px 20px;
-            border-radius: 20px; margin: 20px 0; font-size: 22px; font-weight: bold;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-radius: 20px; margin: 20px 0; font-size: 26px; font-weight: 900;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid transparent;
         }
 
-        .role-revealed { background: linear-gradient(135deg, #4a148c, #7b1fa2) !important; color: white !important; }
+        .role-revealed { background: linear-gradient(135deg, #2e0854, #4a148c) !important; color: white !important; border-color: var(--purple-light); }
 
-        .timer-display { font-size: 50px; font-weight: bold; margin: 15px 0; text-shadow: 0 0 20px var(--purple-light); }
-        .help-box { background: rgba(0, 0, 0, 0.3); border: 1px dashed var(--imposter-red); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 13px; }
+        .big-word { font-size: 32px; color: #fff; text-shadow: 0 0 10px #9c27b0; display: block; margin-top: 10px; }
+        .hint-text { color: #00ffcc; font-size: 14px; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; }
 
-        .grey-footer { font-size: 14px; letter-spacing: 2px; margin-top: 20px; opacity: 0.6; animation: pulseGrey 3s infinite; }
-        @keyframes pulseGrey { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); color: var(--purple-light); } }
+        .timer-display { font-size: 60px; font-weight: 900; margin: 15px 0; color: #fff; text-shadow: 0 0 20px var(--purple-light); }
+        .starter-box { background: var(--gold); color: black; padding: 15px; border-radius: 15px; font-weight: 900; font-size: 1.2rem; margin-top: 20px; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .grey-footer { font-size: 14px; letter-spacing: 2px; margin-top: 20px; opacity: 0.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- لاپەڕەی ١: دەستپێک -->
     <div id="page1" class="page active">
-        <h1 style="font-size: 2.2rem; margin-top: 40px;">بەخێر بێی بۆ یاری <br><span class="imposter-text">IMPOSTER</span></h1>
-        <div style="margin-top: 60px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
+        <h1 style="font-size: 2.5rem; margin-top: 40px;">یاری <br><span class="imposter-text">IMPOSTER</span></h1>
+        <p style="margin-top: 10px; opacity: 0.8;">کێ دەتوانێ جوانترین درۆ بکات؟</p>
+        <div style="margin-top: 80px;"><button class="btn-main" onclick="nextPage(2)">دەستپێکردن</button></div>
     </div>
 
+    <!-- لاپەڕەی ٢: ڕێکخستن -->
     <div id="page2" class="page">
         <h3><b>ڕێکخستنی یاریزانەکان</b></h3>
         <div style="background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; margin: 5px 0; border: 1px solid var(--glass-border);">
             <div style="display: flex; gap: 5px;">
-                <input type="text" id="nameInput" placeholder="ناوی یاریزان...">
-                <button onclick="addPlayerName()" style="width:50px; border-radius:10px; border:none; background:var(--purple-light); color:white; cursor:pointer;">+</button>
+                <input type="text" id="nameInput" placeholder="ناوی یاریزان بنووسە...">
+                <button onclick="addPlayerName()" style="width:50px; border-radius:10px; border:none; background:var(--purple-light); color:white; font-size:24px; cursor:pointer;">+</button>
             </div>
             <div id="namesContainer" class="names-grid"></div>
         </div>
@@ -125,63 +128,64 @@
         <button class="btn-main" onclick="startGame()">دەستپێکردنی گەڕ</button>
     </div>
 
+    <!-- لاپەڕەی ٣: نیشاندانی ڕۆڵ -->
     <div id="page3" class="page">
-        <h2 id="currentPlayerName" style="color: var(--purple-light);">ناو</h2>
+        <h2 id="currentPlayerName" style="color: var(--purple-light); font-size: 28px; font-weight: 900;">ناو</h2>
         <div class="role-card" id="roleCard" onclick="revealRole()">بۆ بینینی ڕۆڵەکەت کلیک بکە</div>
-        <div id="imposterHelp" class="help-box" style="display:none;">
-            <b style="color:var(--imposter-red)">یارمەتی:</b> تۆ ئیمپۆستەریت! هەوڵبدە وشەی گشتی بەکاربهێنیت.
+        <div id="imposterHelp" style="display:none; background: rgba(255, 61, 61, 0.15); border: 2px dashed var(--imposter-red); padding: 15px; border-radius: 15px;">
+            <b class="imposter-text" style="font-size: 18px;">تۆ ئیمپۆستەریت!</b><br>
+            <p id="imposterHint" class="hint-text"></p>
         </div>
         <button class="btn-main" id="nextTurnBtn" style="display:none; margin-top: 20px;" onclick="nextTurn()">کەسی دواتر</button>
     </div>
 
+    <!-- لاپەڕەی ٤: کاتی گفتوگۆ و دەستپێکەر -->
     <div id="page4" class="page">
         <h2><b>کاتی گفتوگۆ</b></h2>
         <div class="timer-display" id="timerValue">00:00</div>
-        <button class="btn-main" onclick="stopTimerAndGoToTimeout()">تەواو بوو</button>
+        
+        <div class="starter-box">
+            یەکەم کەس قسە دەکات:<br>
+            <span id="starterPlayer" style="font-size: 24px; text-decoration: underline;">...</span>
+        </div>
+
+        <button class="btn-main" onclick="stopTimerAndGoToTimeout()" style="margin-top: 30px;">تەواو بوو</button>
+    </div>
+
+    <!-- لاپەڕەی ٥: ئەنجام -->
+    <div id="page5" class="page">
+        <h2 style="font-size: 24px;"><b>کۆتایی گەڕ</b></h2>
+        <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 2px solid var(--glass-border); margin: 15px 0;">
+            <p style="opacity: 0.8;">وشە نهێنییەکە بوو:</p>
+            <b style="color:var(--gold); font-size: 35px; display: block; margin: 10px 0;" id="finalWord">...</b>
+            <hr style="opacity: 0.2; margin: 15px 0;">
+            <p style="opacity: 0.8;">ئیمپۆستەرەکان:</p>
+            <b class="imposter-text" style="font-size: 28px;" id="finalImposters">...</b>
+        </div>
+        
+        <p style="font-size: 16px; margin-bottom: 10px;">کێ بردیەوە؟</p>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-main btn-score" onclick="updateScore('citizens')">گرووپ (+١ خاڵ)</button>
+            <button class="btn-main btn-score" style="background:#f44336;" onclick="updateScore('imposters')">ئیمپۆستەر (+٣ خاڵ)</button>
+        </div>
+        <button class="btn-main" onclick="resetToSetup()" style="margin-top: 20px; background: none; border: 1px solid white;">گەڕی نوێ</button>
     </div>
 
     <div id="pageTimeOut" class="page">
-        <h1 class="imposter-text" style="font-size: 3rem; margin-top: 40px;">STOP</h1>
+        <h1 class="imposter-text" style="font-size: 5rem; margin-top: 40px;">STOP</h1>
+        <p>کاتی گفتوگۆ تەواو بوو!</p>
         <button class="btn-main" onclick="finishGame()">ئاشکراکردن</button>
     </div>
 
-    <div id="page5" class="page">
-        <h2><b>ئەنجامی گەڕ</b></h2>
-        <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border: 1px solid var(--glass-border); margin: 10px 0;">
-            <p>وشەکە: <b style="color:var(--purple-light);" id="finalWord">...</b></p>
-            <p>ئیمپۆستەر: <b class="imposter-text" id="finalImposters">...</b></p>
-        </div>
-        
-        <p style="font-size: 14px; margin-bottom: 5px;">کێ بردیەوە؟</p>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-main btn-score" onclick="updateScore('citizens')">گرووپ (١ خاڵ)</button>
-            <button class="btn-main btn-score" style="background:#f44336;" onclick="updateScore('imposters')">ئیمپۆستەر (٣ خاڵ)</button>
-        </div>
-        <button class="btn-main" onclick="resetToSetup()" style="margin-top: 20px;">گەڕی نوێ</button>
-    </div>
-
-    <div class="grey-footer"><b>Grey</b></div>
+    <div class="grey-footer"><b>GRAY GAMES</b></div>
 </div>
 
 <script>
-    // --- بەشی ئۆفلاین (Service Worker) ---
-    const swCode = `
-    const cacheName = 'imposter-v1';
-    const assets = ['./', './index.html'];
-    self.addEventListener('install', e => e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets))));
-    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
-    `;
-
-    if ('serviceWorker' in navigator) {
-        const blob = new Blob([swCode], { type: 'application/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob));
-    }
-
-    // --- لۆجیکی یارییەکە ---
     let players = []; 
     let selectedCategories = [];
+    let currentCategory = "";
     const gameData = {
-        "کار": ["پزیشک", "ئەندازیار", "مامۆستا", "پۆلیس", "جوتیار", "نۆژەنکەرەوە", "سەرتاش", "وێنەگر", "نانەوا", "فڕۆکەوان"],
+        "کار": ["پزیشک", "ئەندازیار", "مامۆستا", "پۆلیس", "جوتیار", "سەرتاش", "وێنەگر", "نانەوا", "فڕۆکەوان", "پارێزەر"],
         "خواردن": ["پیتزا", "کباب", "دۆڵمە", "بەرگر", "برنج", "شێلم", "شۆربا", "مریشک", "ماسی", "یاپراخ"],
         "کەلوپەل": ["قەڵەم", "مۆبایل", "کۆمپیوتەر", "سەعات", "کورسی", "تەلەفزیۆن", "چەتر", "کلیل", "جام", "گوێگرە"],
         "ئاژەڵ": ["شێر", "پشیلە", "فیل", "ئەسپ", "سەگ", "ورچ", "کەروێشک", "مەیمون", "گورگ", "کیسەڵ"],
@@ -212,22 +216,21 @@
         const container = document.getElementById('namesContainer');
         container.innerHTML = players.map((p, index) => `
             <div class="name-tag">
-                <div style="display:flex; align-items:center;">
-                    <span class="remove-btn" onclick="removeName(${index})">×</span>
-                    <b>${p.name}</b>
+                <div style="font-weight: bold;">
+                    <span style="color:#ff4d4d; cursor:pointer; margin-left:10px;" onclick="removeName(${index})">×</span>
+                    ${p.name}
                 </div>
-                <div class="score-controls">
-                    <button class="btn-mini btn-minus" onclick="manualScore(${index}, -1)">-</button>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <button class="btn-mini" style="background:#f44336; border:none; color:white; border-radius:4px; width:20px;" onclick="manualScore(${index}, -1)">-</button>
                     <span class="score-badge">${p.score}</span>
-                    <button class="btn-mini btn-plus" onclick="manualScore(${index}, 1)">+</button>
+                    <button class="btn-mini" style="background:#4caf50; border:none; color:white; border-radius:4px; width:20px;" onclick="manualScore(${index}, 1)">+</button>
                 </div>
             </div>
         `).join('');
     }
 
     function manualScore(index, val) {
-        players[index].score += val;
-        if(players[index].score < 0) players[index].score = 0;
+        players[index].score = Math.max(0, players[index].score + val);
         renderNames();
     }
 
@@ -246,22 +249,18 @@
 
     function startGame() {
         if (players.length < 3) return alert("لایەنی کەم ٣ یاریزان پێویستە");
-        if (selectedCategories.length === 0) return alert("لایەنی کەم بەشێک هەڵبژێرە");
+        if (selectedCategories.length === 0) return alert("لایەنی کەم جۆرێک هەڵبژێرە");
 
-        let allWords = [];
-        selectedCategories.forEach(cat => {
-            allWords = allWords.concat(gameData[cat]);
-        });
-        
-        secretWord = allWords[Math.floor(Math.random() * allWords.length)];
+        currentCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+        let wordsInCat = gameData[currentCategory];
+        secretWord = wordsInCat[Math.floor(Math.random() * wordsInCat.length)];
         
         let count = Math.min(parseInt(document.getElementById('imposterCount').value) || 1, players.length - 2);
         imposters = [];
-        
-        let tempPlayers = [...players];
+        let tempNames = players.map(p => p.name);
         for(let i=0; i<count; i++) {
-            let idx = Math.floor(Math.random() * tempPlayers.length);
-            imposters.push(tempPlayers.splice(idx, 1)[0].name);
+            let idx = Math.floor(Math.random() * tempNames.length);
+            imposters.push(tempNames.splice(idx, 1)[0]);
         }
         
         turnIndex = 0;
@@ -274,7 +273,7 @@
         document.getElementById('currentPlayerName').innerText = players[turnIndex].name;
         const card = document.getElementById('roleCard');
         card.classList.remove('role-revealed');
-        card.innerText = "بۆ بینینی ڕۆڵەکەت کلیک بکە";
+        card.innerHTML = "بۆ بینینی ڕۆڵەکەت کلیک بکە";
         document.getElementById('imposterHelp').style.display = "none";
         document.getElementById('nextTurnBtn').style.display = "none";
     }
@@ -283,11 +282,13 @@
         if (isRevealed) return;
         const card = document.getElementById('roleCard');
         card.classList.add('role-revealed');
+        
         if (imposters.includes(players[turnIndex].name)) {
-            card.innerText = "تۆ IMPOSTER یت!";
+            card.innerHTML = "<span class='imposter-text' style='font-size:40px;'>IMPOSTER</span>";
             document.getElementById('imposterHelp').style.display = "block";
+            document.getElementById('imposterHint').innerText = "ئاسانکاری: وشەکە سەر بە بەشی (" + currentCategory + ") یە. هەوڵبدە شتێکی نزیک بڵێیت!";
         } else {
-            card.innerText = "وشەکە: " + secretWord;
+            card.innerHTML = "وشەکە:<br><span class='big-word'>" + secretWord + "</span>";
         }
         isRevealed = true;
         document.getElementById('nextTurnBtn').style.display = "inline-block";
@@ -295,44 +296,56 @@
 
     function nextTurn() {
         turnIndex++;
-        if (turnIndex < players.length) showTurn();
-        else startTimer();
+        if (turnIndex < players.length) {
+            showTurn();
+        } else {
+            startTimer();
+        }
     }
 
     function startTimer() {
         nextPage(4);
+        // هەڵبژاردنی کەسێک بۆ دەستپێکردنی قسە بە ڕاندۆم
+        const randomStarter = players[Math.floor(Math.random() * players.length)].name;
+        document.getElementById('starterPlayer').innerText = randomStarter;
+
         let seconds = parseInt(document.getElementById('gameTime').value) || 60;
         const display = document.getElementById('timerValue');
         timerInterval = setInterval(() => {
-            let mins = Math.floor(seconds / 60); let secs = seconds % 60;
+            let mins = Math.floor(seconds / 60);
+            let secs = seconds % 60;
             display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            if (seconds <= 0) { clearInterval(timerInterval); showTimeout(); }
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
+                nextPage('pageTimeOut');
+            }
             seconds--;
         }, 1000);
     }
 
-    function stopTimerAndGoToTimeout() { clearInterval(timerInterval); showTimeout(); }
-    function showTimeout() { nextPage('pageTimeOut'); }
+    function stopTimerAndGoToTimeout() {
+        clearInterval(timerInterval);
+        nextPage('pageTimeOut');
+    }
 
     function finishGame() {
         document.getElementById('finalWord').innerText = secretWord;
-        document.getElementById('finalImposters').innerText = imposters.join(" ، ");
+        document.getElementById('finalImposters').innerText = imposters.join(" - ");
         nextPage(5);
     }
 
     function updateScore(winner) {
         players.forEach(p => {
-            if (winner === 'imposters') {
-                if (imposters.includes(p.name)) p.score += 3;
-            } else {
-                if (!imposters.includes(p.name)) p.score += 1;
-            }
+            if (winner === 'imposters' && imposters.includes(p.name)) p.score += 3;
+            if (winner === 'citizens' && !imposters.includes(p.name)) p.score += 1;
         });
         renderNames();
-        alert("خاڵەکان نوێکرانەوە!");
+        alert("خاڵەکان تۆمارکران!");
     }
 
-    function resetToSetup() { nextPage(2); }
+    function resetToSetup() {
+        nextPage(2);
+    }
 </script>
 </body>
-    </html>
+</html>
